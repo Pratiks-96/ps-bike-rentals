@@ -1,7 +1,8 @@
-name: Frontend CI - PS Bike Rentals
+name: Frontend CI & Docker Push (Latest Only)
 
 on:
   push:
+    branches: [ "main" ]
     paths:
       - "frontend/**"
       - ".github/workflows/frontend-ci.yml"
@@ -10,8 +11,7 @@ on:
       - "frontend/**"
 
 jobs:
-  build:
-    name: Build Frontend
+  build-and-push:
     runs-on: ubuntu-latest
 
     defaults:
@@ -32,34 +32,18 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run lint (optional)
-        run: npm run lint --if-present
-
       - name: Build frontend
         run: npm run build
 
-  docker-build:
-    name: Build Docker Image (Optional)
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.ref == 'refs/heads/main'
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
       - name: Log in to Docker Hub
-        if: secrets.DOCKER_USERNAME != ''
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and push Docker image
+      - name: Build and push Docker image (latest only)
         uses: docker/build-push-action@v5
         with:
           context: ./frontend
           push: true
-          tags: |
-            ${{ secrets.DOCKER_USERNAME }}/ps-bike-frontend:latest
-            
+          tags: ${{ secrets.DOCKER_USERNAME }}/ps-bike-frontend:latest
