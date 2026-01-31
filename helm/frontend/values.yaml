@@ -1,6 +1,6 @@
 replicaCount: 1
 image:
-  repository: ps-bike-frontend
+  repository: pratik6958/ps-bike-frontend
   tag: latest
 service:
   type: ClusterIP
