@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ps-bike-frontend
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: ps-bike-frontend
+  template:
+    metadata:
+      labels:
+        app: ps-bike-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ps-bike-frontend
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    app: ps-bike-frontend
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: 80
