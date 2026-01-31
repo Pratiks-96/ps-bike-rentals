@@ -14,6 +14,7 @@ spec:
         - values.yaml
   destination:
     server: https://kubernetes.default.svc
+    namespace: bikerent   # 👈 add your app namespace here
   syncPolicy:
     automated:
       prune: true
